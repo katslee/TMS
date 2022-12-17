@@ -127,12 +127,12 @@ def read_excel(filename):
             row += 1
 
     os.chmod(script,0o755)
-    if error or not error:
-        rcode = call(script,shell=True)
-        files = glob.iglob(os.path.join(working, "*.jpg"))
-        for f in files:
-            if os.path.isfile(f):
-                shutil.copy2(f, output + folder)
+#    if error or not error:
+#        rcode = call(script,shell=True)
+#        files = glob.iglob(os.path.join(working, "*.jpg"))
+#        for f in files:
+#            if os.path.isfile(f):
+#                shutil.copy2(f, output + folder)
 
 
 

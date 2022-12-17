@@ -3,10 +3,10 @@ from datetime import datetime, date, timedelta
 import os
 
 def takefrequency(elem):
-    return elem[2]
+    return elem[1]
 
 def takepriority(elem):
-    return elem[3]
+    return elem[2]
 
 def fname(sn, etime, btype):
     if etime.month < 10:
@@ -32,7 +32,7 @@ def fname(sn, etime, btype):
     return fn
 
 def gen_order(filename):
-# Bulletin [sn, bulletinType, frequency, priority, channel, TXTime, EndTime]
+# Bulletin [sn, bulletinType, frequency, priority, channel, TXTime, EndTime, Filename]
 
     wb = openpyxl.load_workbook(filename,data_only=True)
     ws = wb.worksheets[0]
@@ -65,25 +65,27 @@ def gen_order(filename):
             endtime = timedelta(hours=int(etime/100),minutes=etime % 100)
         EndTime = endtime + enddate
         bulletin = []
-        bulletin.append(fname(sn,EndTime,bulletinType))
+        bulletin.append(sn)
         bulletin.append(frequency)
         bulletin.append(priority)
         bulletin.append(channel)
         bulletin.append(TXTime)
         bulletin.append(EndTime)
+        bulletin.append(fname(sn,EndTime,bulletinType))
         if bulletinType == "T":
             t_bulletins.append(bulletin)
         else:
             g_bulletins.append(bulletin)
         row += 1
-    g_bulletins.sort(key=takepriority,reverse=True)
-    t_bulletins.sort(key=takepriority,reverse=True)
+
     wb.close
     return t_bulletins, g_bulletins
 
 gb = []
 tb = []
 tb, gb = gen_order("/Users/Kats/Documents/TickerManagementSystem/Python/TMS_real case_20221207_v2.xlsx")
+tb.sort(key=takefrequency, reverse=True)
+gb.sort(key=takepriority, reverse=True)
 print("Graphic")
 for b in gb:
     print(b)
