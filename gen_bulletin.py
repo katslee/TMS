@@ -9,8 +9,10 @@ import gen_ordering
 
 crlf = chr(13) + chr(10)
 lf = chr(10)
-output = "/Users/Kats/Documents/TickerManagementSystem/Python/"
-working = "/Users/Kats/Documents/TickerManagementSystem/Python/working/"
+#output = "/Users/Kats/Documents/TickerManagementSystem/Python/"
+#working = "/Users/Kats/Documents/TickerManagementSystem/Python/working/"
+output = "/home/kats/TMS/output/"
+working = "/home/kats/TMS/working/"
 text_bulletin_filename = "L-Title.txt"
 
 def read_excel(filename):
