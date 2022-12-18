@@ -1,7 +1,7 @@
 import openpyxl
 from datetime import datetime, date, timedelta
-import os
 
+watch = "/data1/TMS/phrase1/user/ingest/"
 def takefrequency(elem):
     return elem[1]
 
@@ -30,6 +30,15 @@ def fname(sn, etime, btype):
     else:
         fn = sn + " d "  + dcode + " " + tcode + ".txt"
     return fn
+
+def remove_dup(bulletins):
+    last_bulletin = []
+    new_bulletins = []
+    for b in bulletins:
+        if last_bulletin != b:
+            new_bulletins.append(b)
+        last_bulletin = b
+    return new_bulletins
 
 def gen_order(filename):
 # Bulletin [sn, bulletinType, frequency, priority, channel, TXTime, EndTime, Filename]
@@ -79,16 +88,44 @@ def gen_order(filename):
         row += 1
 
     wb.close
-    return t_bulletins, g_bulletins
 
-gb = []
-tb = []
-tb, gb = gen_order("/Users/Kats/Documents/TickerManagementSystem/Python/TMS_real case_20221207_v2.xlsx")
-tb.sort(key=takefrequency, reverse=True)
-gb.sort(key=takepriority, reverse=True)
+# Graphic Bulletin Order (Priority > Frequency)
+    g_bulletins.sort(key=takepriority, reverse=True)
+    g_order = []
+    finish = False
+    while not finish:
+        finish = True
+        for bulletin in g_bulletins:
+            current_time = datetime.now()
+            if (bulletin[2] > 0) and (bulletin[4] < current_time) and (current_time <= bulletin[5]):
+                #g_order.append(bulletin[6] + "," + str(bulletin[2]))
+                g_order.append(bulletin[6])
+                bulletin[2] -= 1
+                finish = False
+
+# Text Bulletin Order (Priority > Frequency)
+    t_bulletins.sort(key=takepriority, reverse=True)
+    t_order = []
+    finish = False
+    while not finish:
+        finish = True
+        for bulletin in t_bulletins:
+            current_time = datetime.now()
+            if (bulletin[2] > 0) and (bulletin[4] < current_time) and (current_time <= bulletin[5]):
+                g_order.append(bulletin[6] + "," + str(bulletin[2]))
+                bulletin[2] -= 1
+                finish = False
+
+    g_order = remove_dup(g_order)
+    t_order = remove_dup(t_order)
+
+    return  g_order, t_order
+
+graphic_order, text_order = gen_order(watch + "TMS_real case_20221207_v2.xlsx")
 print("Graphic")
-for b in gb:
+for b in graphic_order:
     print(b)
-print ("Text")
-for b in tb:
+
+print("Text")
+for b in text_order:
     print(b)

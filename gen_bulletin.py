@@ -9,8 +9,14 @@ import gen_ordering
 
 crlf = chr(13) + chr(10)
 lf = chr(10)
-output = "/Users/Kats/Documents/TickerManagementSystem/Python/"
-working = "/Users/Kats/Documents/TickerManagementSystem/Python/working/"
+#output = "/Users/Kats/Documents/TickerManagementSystem/Python/"
+#working = "/Users/Kats/Documents/TickerManagementSystem/Python/working/"
+#output = "/home/kats/TMS/output/"
+#working = "/home/kats/TMS/working/"
+output = "/data1/TMS/phrase1/user/result/"
+working = "/data1/TMS/phrase1/working/"
+pythonfolder = "/data1/TMS/phrase1/python/"
+
 text_bulletin_filename = "L-Title.txt"
 
 def read_excel(filename):
@@ -117,7 +123,7 @@ def read_excel(filename):
             else:
                 tcode = tcode + str(EndTime.minute)
             if bulletinType == "G":
-                f.writelines("../upper_image_billboard.sh " + str(sn) + " " + chr(34) + qrcode + chr(34) + " " + dcode + " " + tcode + "\n")
+                f.writelines(pythonfolder + "upper_image_billboard.sh " + str(sn) + " " + chr(34) + qrcode + chr(34) + " " + dcode + " " + tcode + "\n")
             else:
                 with open(working + gen_ordering.fname(sn, EndTime, "T"), "w") as f:
                     f.writelines(title + crlf)
@@ -127,12 +133,12 @@ def read_excel(filename):
             row += 1
 
     os.chmod(script,0o755)
-#    if error or not error:
-#        rcode = call(script,shell=True)
-#        files = glob.iglob(os.path.join(working, "*.jpg"))
-#        for f in files:
-#            if os.path.isfile(f):
-#                shutil.copy2(f, output + folder)
+    if error or not error:
+        rcode = call(script,shell=True)
+        files = glob.iglob(os.path.join(working, "*.jpg"))
+        for f in files:
+            if os.path.isfile(f):
+                shutil.copy2(f, output + folder)
 
 
 
