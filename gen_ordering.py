@@ -1,14 +1,22 @@
 import openpyxl
 from datetime import datetime, date, timedelta
+import glob
+import os
 
-#watch = "/home/kats/TMS/"
-watch = "/Users/Kats/Documents/TickerManagementSystem/Python/"
+#watch = "/data1/TMS/phrase1/user/ingest/"
+watch = "/data1/TMS/phrase1/network/export/"
+update = "/data1/TMS/phrase1/update/"
+#output = "/data1/TMS/phrase1/user/result/"
+#output = "/data1/TMS/phrase1/network/export/result/"
 
 def takefrequency(elem):
     return elem[1]
 
 def takepriority(elem):
     return elem[2]
+
+def takesn(elem):
+    return elem[0]
 
 def fname(sn, etime, btype):
     if etime.month < 10:
@@ -28,9 +36,9 @@ def fname(sn, etime, btype):
     else:
         tcode = tcode + str(etime.minute)
     if btype == "G":
-        fn = sn + " d "  + dcode + " " + tcode + ".jpg"
+        fn = sn + " d"  + dcode + " " + tcode + ".jpg"
     else:
-        fn = sn + " d "  + dcode + " " + tcode + ".txt"
+        fn = sn + " d"  + dcode + " " + tcode + ".txt"
     return fn
 
 def remove_dup(bulletins):
@@ -42,7 +50,7 @@ def remove_dup(bulletins):
         last_bulletin = b
     return new_bulletins
 
-def gen_order(filename):
+def gen_order(filename, gfolder, tfolder):
 # Bulletin [sn, bulletinType, frequency, priority, channel, TXTime, EndTime, Filename]
 
     wb = openpyxl.load_workbook(filename,data_only=True)
@@ -89,9 +97,10 @@ def gen_order(filename):
             g_bulletins.append(bulletin)
         row += 1
 
-    wb.close
+    wb.close()
 
-# Graphic Bulletin Order (Priority > Frequency)
+# Graphic Bulletin Order (SN > Priority > Frequency)
+    g_bulletins.sort(key=takesn, reverse=True)
     g_bulletins.sort(key=takepriority, reverse=True)
     g_order = []
     finish = False
@@ -105,7 +114,8 @@ def gen_order(filename):
                 bulletin[2] -= 1
                 finish = False
 
-# Text Bulletin Order (Priority > Frequency)
+# Text Bulletin Order (SN > Priority > Frequency)
+    t_bulletins.sort(key=takesn, reverse=True)
     t_bulletins.sort(key=takepriority, reverse=True)
     t_order = []
     finish = False
@@ -114,20 +124,30 @@ def gen_order(filename):
         for bulletin in t_bulletins:
             current_time = datetime.now()
             if (bulletin[2] > 0) and (bulletin[4] < current_time) and (current_time <= bulletin[5]):
-                g_order.append(bulletin[6] + "," + str(bulletin[2]))
+                #t_order.append(bulletin[6] + "," + str(bulletin[2]))
+                t_order.append(bulletin[6])
                 bulletin[2] -= 1
                 finish = False
 
     g_order = remove_dup(g_order)
     t_order = remove_dup(t_order)
 
-    return  g_order, t_order
+    g_order_file = gfolder + 'gb_order.txt'
+    with open(g_order_file, "w") as f:
+        for g in g_order:
+            f.writelines(g + "\r\n")
+        f.close()
 
-graphic_order, text_order = gen_order(watch + "TMS_real case_20221207_v2.xlsx")
-print("Graphic")
-for b in graphic_order:
-    print(b)
+    t_order_file = tfolder + 'L-Title.txt'
+    with open(t_order_file, "w") as f:
+        for t in t_order:
+            # read text bulletin from update folder and write to L-Title
+            with open(update + t, "r") as tfile:
+                tcontent = tfile.readlines()
+                for t in tcontent:
+                    t = t.replace("\n","\r\n")
+                    f.writelines(t)
+            tfile.close()
+        f.close()
 
-print("Text")
-for b in text_order:
-    print(b)
+
