@@ -3,14 +3,20 @@ from datetime import datetime, date, timedelta
 import glob
 import os
 
-watch = "/data1/TMS/phrase1/user/ingest/"
+#watch = "/data1/TMS/phrase1/user/ingest/"
+watch = "/data1/TMS/phrase1/network/export/"
 update = "/data1/TMS/phrase1/update/"
-output = "/data1/TMS/phrase1/user/result/"
+#output = "/data1/TMS/phrase1/user/result/"
+#output = "/data1/TMS/phrase1/network/export/result/"
+
 def takefrequency(elem):
     return elem[1]
 
 def takepriority(elem):
     return elem[2]
+
+def takesn(elem):
+    return elem[0]
 
 def fname(sn, etime, btype):
     if etime.month < 10:
@@ -44,7 +50,7 @@ def remove_dup(bulletins):
         last_bulletin = b
     return new_bulletins
 
-def gen_order(filename, ofolder):
+def gen_order(filename, gfolder, tfolder):
 # Bulletin [sn, bulletinType, frequency, priority, channel, TXTime, EndTime, Filename]
 
     wb = openpyxl.load_workbook(filename,data_only=True)
@@ -93,7 +99,8 @@ def gen_order(filename, ofolder):
 
     wb.close()
 
-# Graphic Bulletin Order (Priority > Frequency)
+# Graphic Bulletin Order (SN > Priority > Frequency)
+    g_bulletins.sort(key=takesn, reverse=True)
     g_bulletins.sort(key=takepriority, reverse=True)
     g_order = []
     finish = False
@@ -107,7 +114,8 @@ def gen_order(filename, ofolder):
                 bulletin[2] -= 1
                 finish = False
 
-# Text Bulletin Order (Priority > Frequency)
+# Text Bulletin Order (SN > Priority > Frequency)
+    t_bulletins.sort(key=takesn, reverse=True)
     t_bulletins.sort(key=takepriority, reverse=True)
     t_order = []
     finish = False
@@ -124,17 +132,21 @@ def gen_order(filename, ofolder):
     g_order = remove_dup(g_order)
     t_order = remove_dup(t_order)
 
-    g_order_file =  ofolder + 'gb_order.txt'
+    g_order_file = gfolder + 'gb_order.txt'
     with open(g_order_file, "w") as f:
         for g in g_order:
-            f.writelines(g + "\n")
+            f.writelines(g + "\r\n")
         f.close()
 
-    t_order_file = ofolder + 'L-Title.txt'
+    t_order_file = tfolder + 'L-Title.txt'
     with open(t_order_file, "w") as f:
         for t in t_order:
+            # read text bulletin from update folder and write to L-Title
             with open(update + t, "r") as tfile:
-                f.writelines(tfile.readlines())
+                tcontent = tfile.readlines()
+                for t in tcontent:
+                    t = t.replace("\n","\r\n")
+                    f.writelines(t)
             tfile.close()
         f.close()
 
