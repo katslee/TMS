@@ -81,11 +81,11 @@ def read_excel(filename):
             with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
                 errfile.writelines(sn + " - title line exceed (" + str(title.count(lf)) + ")." + "\r\n")
             error = True
-            for line in title.splitlines():
-                if (bulletinType == "G" and unilen(line) > 11) or (bulletinType == "T" and unilen(line) > 14):
-                    with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
-                        errfile.writelines(sn +  " - title words exceed (" + str(unilen(line)) + ")." + "\r\n")
-                    error = True
+        for line in title.splitlines():
+            if (bulletinType == "G" and unilen(line) > 11) or (bulletinType == "T" and unilen(line) > 14):
+                with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                    errfile.writelines(sn +  " - title words exceed (" + str(unilen(line)) + ")." + "\r\n")
+                error = True
 
         content = ws.cell(row=row, column=13).value
         if (bulletinType == "G" and content.count(lf) > 3) or (bulletinType == "T" and content.count(lf) > 8):
@@ -193,10 +193,12 @@ def read_excel(filename):
         #print(rcode)
 
         # Move all files in output folder to old folder
-        files = glob.iglob(os.path.join(graphic_output, "*.*"))
+        files = glob.iglob(os.path.join(graphic_output, "*.jpg"))
         for f in files:
             if os.path.isfile(f):
-                shutil.move(f, graphic_output + "old/")
+                path, fname = os.path.split(f)
+                shutil.move(f, graphic_output + "old/" + fname)
+        #shutil.move(graphic_output + "gb_order.txt", graphic_output + "old/" + "gb_order.txt")
 
         # Copy jpg from working folder to result folder
         files = glob.iglob(os.path.join(working, "*.jpg"))
@@ -205,7 +207,7 @@ def read_excel(filename):
                 shutil.copy2(f, updatefolder)
                 shutil.copy2(f, graphic_output)
 
-        # Copy text from working to result folders
+        # Copy text from working to update folders
         files = glob.iglob(os.path.join(working, "*.txt"))
         for f in files:
             if os.path.isfile(f):

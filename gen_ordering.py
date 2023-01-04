@@ -99,34 +99,35 @@ def gen_order(filename, gfolder, tfolder):
 
     wb.close()
 
-# Graphic Bulletin Order (SN > Priority > Frequency)
+# Graphic Bulletin Order (Priority > SN > Frequency)
+    g_bulletins.sort(key=takepriority, reverse=False)
     g_bulletins.sort(key=takesn, reverse=True)
-    g_bulletins.sort(key=takepriority, reverse=True)
+
     g_order = []
     finish = False
     while not finish:
         finish = True
         for bulletin in g_bulletins:
             current_time = datetime.now()
-            if (bulletin[2] > 0) and (bulletin[4] < current_time) and (current_time <= bulletin[5]):
+            if (bulletin[1] > 0) and (bulletin[4] < current_time) and (current_time <= bulletin[5]):
                 #g_order.append(bulletin[6] + "," + str(bulletin[2]))
                 g_order.append(bulletin[6])
-                bulletin[2] -= 1
+                bulletin[1] -= 1
                 finish = False
 
 # Text Bulletin Order (SN > Priority > Frequency)
     t_bulletins.sort(key=takesn, reverse=True)
-    t_bulletins.sort(key=takepriority, reverse=True)
+    t_bulletins.sort(key=takepriority, reverse=False)
     t_order = []
     finish = False
     while not finish:
         finish = True
         for bulletin in t_bulletins:
             current_time = datetime.now()
-            if (bulletin[2] > 0) and (bulletin[4] < current_time) and (current_time <= bulletin[5]):
+            if (bulletin[1] > 0) and (bulletin[4] < current_time) and (current_time <= bulletin[5]):
                 #t_order.append(bulletin[6] + "," + str(bulletin[2]))
                 t_order.append(bulletin[6])
-                bulletin[2] -= 1
+                bulletin[1] -= 1
                 finish = False
 
     g_order = remove_dup(g_order)
