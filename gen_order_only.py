@@ -5,6 +5,7 @@ import filecmp
 import shutil
 from datetime import datetime
 
+# This is a test for github token login and sync
 #watch = "/Users/Kats/Documents/TickerManagementSystem/Python/"
 #watch = "/data1/TMS/phrase1/user/ingest/"
 #output = "/data1/TMS/phrase1/user/result/"
