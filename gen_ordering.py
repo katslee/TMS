@@ -114,9 +114,11 @@ def gen_order(filename, gfolder, tfolder):
 
     wb.close()
 
-# Graphic Bulletin Order (SN > Priority > Frequency)
-    g_bulletins.sort(key=takesn, reverse=True)
+# Graphic Bulletin Order (SN / Priority / Frequency)
     g_bulletins.sort(key=takepriority, reverse=True)
+    g_bulletins.sort(key=takefrequency,reverse=True)
+    g_bulletins.sort(key=takesn, reverse=True)
+
     g_order = []
 
 # Round 1 allocation until no append SN in a loop
