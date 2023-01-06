@@ -3,12 +3,14 @@ from datetime import datetime, date, timedelta
 import glob
 import os
 
-#watch = "/data1/TMS/phrase1/user/ingest/"
-watch = "/data1/TMS/phrase1/network/export/"
-update = "/data1/TMS/phrase1/update/"
-#output = "/data1/TMS/phrase1/user/result/"
-#output = "/data1/TMS/phrase1/network/export/result/"
 
+# AMS UAT Server
+#watch = "/data1/TMS/phrase1/network/export/"
+#update = "/data1/TMS/phrase1/update/"
+
+# MacOS Development
+watch = "/Users/Kats/Documents/TickerManagementSystem/Python/watch/"
+update = "Users/Kats/Documents/TickerManagementSystem/Python/update/"
 def takefrequency(elem):
     return elem[1]
 
@@ -50,6 +52,18 @@ def remove_dup(bulletins):
         last_bulletin = b
     return new_bulletins
 
+def reorder(bulletins):
+    last = len(bulletins) - 1
+    if bulletins[last] == bulletins[last - 1]:
+        b = bulletins[last]
+        l = last - 1
+        for i in reversed(range(l)):
+            if (bulletins[i] != b) and (bulletins[i - 1] != b):
+                bulletins.insert(i,b)
+                break
+        del bulletins[-1]
+    return bulletins
+
 def gen_order(filename, gfolder, tfolder):
 # Bulletin [sn, bulletinType, frequency, priority, channel, TXTime, EndTime, Filename]
 
@@ -62,10 +76,11 @@ def gen_order(filename, gfolder, tfolder):
     while ws.cell(row=row,column=1).value != None:
         sn = str(ws.cell(row=row, column=11).value)
         bulletinType = str.lower(ws.cell(row=row, column=1).value)
-        if bulletinType[0:4] == "text":
+        if bulletinType == "text bulletin":
             bulletinType = "T"
-        else:
+        elif bulletinType == "graphic bulletin":
             bulletinType = "G"
+
         frequency = ws.cell(row=row, column=2).value
         priority = ws.cell(row=row, column=3).value
         channel = ws.cell(row=row, column=4).value
@@ -103,16 +118,31 @@ def gen_order(filename, gfolder, tfolder):
     g_bulletins.sort(key=takesn, reverse=True)
     g_bulletins.sort(key=takepriority, reverse=True)
     g_order = []
+
+# Round 1 allocation until no append SN in a loop
+    finish = False
+    current_time = datetime.now()
+    while not finish:
+        finish = True
+        for bulletin in g_bulletins:
+            if (bulletin[1] > 0) and (bulletin[4] < current_time) and (current_time <= bulletin[5]):
+                g_order.append(bulletin[6])
+                if len(g_order) > 2:
+                    reorder(g_order)
+                bulletin[1] -= 1
+                finish = False
+
+# Next Round if anyone Frequency > 0
     finish = False
     while not finish:
         finish = True
         for bulletin in g_bulletins:
-            current_time = datetime.now()
-            if (bulletin[2] > 0) and (bulletin[4] < current_time) and (current_time <= bulletin[5]):
-                #g_order.append(bulletin[6] + "," + str(bulletin[2]))
+            if (bulletin[1] > 0) and (bulletin[4] < current_time) and (current_time <= bulletin[5]):
                 g_order.append(bulletin[6])
-                bulletin[2] -= 1
+                reorder(g_order)
+                bulletin[1] -= 1
                 finish = False
+
 
 # Text Bulletin Order (SN > Priority > Frequency)
     t_bulletins.sort(key=takesn, reverse=True)
@@ -123,14 +153,25 @@ def gen_order(filename, gfolder, tfolder):
         finish = True
         for bulletin in t_bulletins:
             current_time = datetime.now()
-            if (bulletin[2] > 0) and (bulletin[4] < current_time) and (current_time <= bulletin[5]):
+            if (bulletin[1] > 0) and (bulletin[4] < current_time) and (current_time <= bulletin[5]):
                 #t_order.append(bulletin[6] + "," + str(bulletin[2]))
                 t_order.append(bulletin[6])
-                bulletin[2] -= 1
+                bulletin[1] -= 1
                 finish = False
 
-    g_order = remove_dup(g_order)
-    t_order = remove_dup(t_order)
+# Next Round if anyone Frequency > 0
+    finish = False
+    while not finish:
+        finish = True
+        for bulletin in t_bulletins:
+            if (bulletin[1] > 0) and (bulletin[4] < current_time) and (current_time <= bulletin[5]):
+                t_order.append(bulletin[6])
+                reorder(t_order)
+                bulletin[1] -= 1
+                finish = False
+
+#    g_order = remove_dup(g_order)
+#    t_order = remove_dup(t_order)
 
     g_order_file = gfolder + 'gb_order.txt'
     with open(g_order_file, "w") as f:

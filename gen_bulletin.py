@@ -11,24 +11,23 @@ crlf = chr(13) + chr(10)
 lf = chr(10)
 
 # Mac setting
-#output = "/Users/Kats/Documents/TickerManagementSystem/Python/"
-#working = "/Users/Kats/Documents/TickerManagementSystem/Python/working/"
+text_output = "/Users/Kats/Documents/TickerManagementSystem/Python/TextBulletin/"
+graphic_output = "/Users/Kats/Documents/TickerManagementSystem/Python/GraphicBulletin/"
+working = "/Users/Kats/Documents/TickerManagementSystem/Python/working/"
+pythonfolder = "/Users/Kats/Documents/TickerManagementSystem/Python/Python/"
+updatefolder = "/Users/Kats/Documents/TickerManagementSystem/Python/update/"
+errorfolder = "/Users/Kats/Documents/TickerManagementSystem/Python/error/"
+convertedfolder = "/Users/Kats/Documents/TickerManagementSystem/Python/converted/"
 
-# VM setting
-#output = "/home/kats/TMS/output/"
-#working = "/home/kats/TMS/working/"
-
-# Server setting
-#output = "/data1/TMS/phrase1/user/result/"
-text_output = "/data1/TMS/phrase1/network/export/result/TextBulletin/"
-graphic_output = "/data1/TMS/phrase1/network/export/result/GraphicBulletin/"
-output = "/data1/TMS/phrase1/network/export/result/"
-working = "/data1/TMS/phrase1/working/"
-pythonfolder = "/data1/TMS/phrase1/python/"
-updatefolder = "/data1/TMS/phrase1/update/"
-#errorfolder = "/data1/TMS/phrase1/user/ingest/error/"
-errorfolder = "/data1/TMS/phrase1/network/export/error/"
-convertedfolder = "/data1/TMS/phrase1/network/export/converted/"
+# AMS UAT Server
+#text_output = "/data1/TMS/phrase1/network/export/result/TextBulletin/"
+#graphic_output = "/data1/TMS/phrase1/network/export/result/GraphicBulletin/"
+#output = "/data1/TMS/phrase1/network/export/result/"
+#working = "/data1/TMS/phrase1/working/"
+#pythonfolder = "/data1/TMS/phrase1/python/"
+#updatefolder = "/data1/TMS/phrase1/update/"
+#errorfolder = "/data1/TMS/phrase1/network/export/error/"
+#convertedfolder = "/data1/TMS/phrase1/network/export/converted/"
 
 text_bulletin_filename = "L-Title.txt"
 
@@ -55,7 +54,8 @@ def read_excel(filename):
     for f in files:
             os.remove(f)
     errorfolder = errorfolder + folder
-    os.mkdir(errorfolder)
+    if not os.path.exists(errorfolder):
+        os.mkdir(errorfolder)
     with open(errorfolder + 'error_' + os.path.basename(filename) + '.txt', "w") as errfile:
         errfile.writelines(datetime.now().strftime("%Y%m%d%H%M") + "\r\n")
     error = False
@@ -70,10 +70,14 @@ def read_excel(filename):
     row = 2
     while ws.cell(row=row,column=1).value != None:
         bulletinType = str.lower(ws.cell(row=row, column=1).value)
-        if bulletinType[0:4] == "text":
+        if bulletinType == "text bulletin":
             bulletinType = "T"
-        else:
+        elif bulletinType == "graphic bulletin":
             bulletinType = "G"
+        else:
+            with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                errfile.writelines(sn + " - Ticker type undefined (" + bulletinType + ")." + "\r\n")
+            error = True
         sn = str(ws.cell(row=row, column=11).value)
         title = ws.cell(row=row, column=12).value
 
@@ -92,10 +96,10 @@ def read_excel(filename):
             with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
                 errfile.writelines(sn + " - content line exceed (" + str(content.count(lf)) + ")." + "\r\n")
             error = True
-        for line in content.splitlines():
+        for index, line in enumerate(content.splitlines()):
             if (bulletinType == "G" and unilen(line) > 7) or (bulletinType == "T" and unilen(line) > 7):
                 with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
-                    errfile.writelines(sn + " - content words exceed (" + str(unilen(line)) + ")." + "\r\n")
+                    errfile.writelines(sn + " - content words exceed (" + str(index + 1) + ":" + str(unilen(line)) + ")." + "\r\n")
                 error = True
         content = content.replace(lf, crlf)
 
