@@ -5,12 +5,12 @@ import os
 
 
 # AMS UAT Server
-#watch = "/data1/TMS/phrase1/network/export/"
-#update = "/data1/TMS/phrase1/update/"
+watch = "/data1/TMS/phrase1/network/export/"
+update = "/data1/TMS/phrase1/update/"
 
 # MacOS Development
-watch = "/Users/Kats/Documents/TickerManagementSystem/Python/watch/"
-update = "Users/Kats/Documents/TickerManagementSystem/Python/update/"
+#watch = "/Users/Kats/Documents/TickerManagementSystem/Python/watch/"
+#update = "Users/Kats/Documents/TickerManagementSystem/Python/update/"
 def takefrequency(elem):
     return elem[1]
 

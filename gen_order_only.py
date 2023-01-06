@@ -6,18 +6,18 @@ import shutil
 from datetime import datetime
 
 # MacOS Development
-pythonfolder = "/Users/Kats/Documents/TickerManagementSystem/Python/python/"
-updatefolder = "/Users/Kats/Documents/TickerManagementSystem/Python/update/"
-text_output = "/Users/Kats/Documents/TickerManagementSystem/Python/TextBulletin/"
-graphic_output = "/Users/Kats/Documents/TickerManagementSystem/Python/GraphicBulletin/"
-working = "/Users/Kats/Documents/TickerManagementSystem/Python/working/"
+#pythonfolder = "/Users/Kats/Documents/TickerManagementSystem/Python/python/"
+#updatefolder = "/Users/Kats/Documents/TickerManagementSystem/Python/update/"
+#text_output = "/Users/Kats/Documents/TickerManagementSystem/Python/TextBulletin/"
+#graphic_output = "/Users/Kats/Documents/TickerManagementSystem/Python/GraphicBulletin/"
+#working = "/Users/Kats/Documents/TickerManagementSystem/Python/working/"
 
 # AMS UAT Server
-#pythonfolder = "/data1/TMS/phrase1/python/"
-#updatefolder = "/data1/TMS/phrase1/update/"
-#text_output = "/data1/TMS/phrase1/network/export/result/TextBulletin/"
-#graphic_output = "/data1/TMS/phrase1/network/export/result/GraphicBulletin/"
-#working = "/data1/TMS/phrase1/working/"
+pythonfolder = "/data1/TMS/phrase1/python/"
+updatefolder = "/data1/TMS/phrase1/update/"
+text_output = "/data1/TMS/phrase1/network/export/result/TextBulletin/"
+graphic_output = "/data1/TMS/phrase1/network/export/result/GraphicBulletin/"
+working = "/data1/TMS/phrase1/working/"
 
 def comparefiles(f1, f2):
     result = filecmp.cmp(f1,f2,shallow=False)
