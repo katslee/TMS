@@ -5,15 +5,16 @@ import filecmp
 import shutil
 from datetime import datetime
 
-# This is a test for github token login and sync
-#watch = "/Users/Kats/Documents/TickerManagementSystem/Python/"
-#watch = "/data1/TMS/phrase1/user/ingest/"
-#output = "/data1/TMS/phrase1/user/result/"
-#working = "/data1/TMS/phrase1/working/"
+# MacOS Development
+#pythonfolder = "/Users/Kats/Documents/TickerManagementSystem/Python/python/"
+#updatefolder = "/Users/Kats/Documents/TickerManagementSystem/Python/update/"
+#text_output = "/Users/Kats/Documents/TickerManagementSystem/Python/TextBulletin/"
+#graphic_output = "/Users/Kats/Documents/TickerManagementSystem/Python/GraphicBulletin/"
+#working = "/Users/Kats/Documents/TickerManagementSystem/Python/working/"
+
+# AMS UAT Server
 pythonfolder = "/data1/TMS/phrase1/python/"
 updatefolder = "/data1/TMS/phrase1/update/"
-
-#watch = "/data1/TMS/phrase1/network/export/"
 text_output = "/data1/TMS/phrase1/network/export/result/TextBulletin/"
 graphic_output = "/data1/TMS/phrase1/network/export/result/GraphicBulletin/"
 working = "/data1/TMS/phrase1/working/"
