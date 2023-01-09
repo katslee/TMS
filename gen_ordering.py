@@ -117,7 +117,7 @@ def gen_order(filename, gfolder, tfolder):
 # Graphic Bulletin Order (SN / Priority / Frequency)
     g_bulletins.sort(key=takesn, reverse=True)
     g_bulletins.sort(key=takefrequency,reverse=True)
-    g_bulletins.sort(key=takepriority, reverse=True)
+    g_bulletins.sort(key=takepriority, reverse=False)
 
     g_order = []
 
@@ -149,7 +149,7 @@ def gen_order(filename, gfolder, tfolder):
 # Text Bulletin Order (SN > Priority > Frequency)
     t_bulletins.sort(key=takesn, reverse=True)
     t_bulletins.sort(key=takefrequency, reverse=True)
-    t_bulletins.sort(key=takepriority, reverse=True)
+    t_bulletins.sort(key=takepriority, reverse=False)
 
     t_order = []
     finish = False
