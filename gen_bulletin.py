@@ -11,23 +11,23 @@ crlf = chr(13) + chr(10)
 lf = chr(10)
 
 # Mac setting
-#text_output = "/Users/Kats/Documents/TickerManagementSystem/Python/TextBulletin/"
-#graphic_output = "/Users/Kats/Documents/TickerManagementSystem/Python/GraphicBulletin/"
-#working = "/Users/Kats/Documents/TickerManagementSystem/Python/working/"
-#pythonfolder = "/Users/Kats/Documents/TickerManagementSystem/Python/Python/"
-#updatefolder = "/Users/Kats/Documents/TickerManagementSystem/Python/update/"
-#errorfolder = "/Users/Kats/Documents/TickerManagementSystem/Python/error/"
-#convertedfolder = "/Users/Kats/Documents/TickerManagementSystem/Python/converted/"
+text_output = "/Users/Kats/Documents/TickerManagementSystem/Python/TextBulletin/"
+graphic_output = "/Users/Kats/Documents/TickerManagementSystem/Python/GraphicBulletin/"
+working = "/Users/Kats/Documents/TickerManagementSystem/Python/working/"
+pythonfolder = "/Users/Kats/Documents/TickerManagementSystem/Python/Python/"
+updatefolder = "/Users/Kats/Documents/TickerManagementSystem/Python/update/"
+errorfolder = "/Users/Kats/Documents/TickerManagementSystem/Python/error/"
+convertedfolder = "/Users/Kats/Documents/TickerManagementSystem/Python/converted/"
 
 # AMS UAT Server
-text_output = "/data1/TMS/phrase1/network/export/result/TextBulletin/"
-graphic_output = "/data1/TMS/phrase1/network/export/result/GraphicBulletin/"
-output = "/data1/TMS/phrase1/network/export/result/"
-working = "/data1/TMS/phrase1/working/"
-pythonfolder = "/data1/TMS/phrase1/python/"
-updatefolder = "/data1/TMS/phrase1/update/"
-errorfolder = "/data1/TMS/phrase1/network/export/error/"
-convertedfolder = "/data1/TMS/phrase1/network/export/converted/"
+#text_output = "/data1/TMS/phrase1/network/export/result/TextBulletin/"
+#graphic_output = "/data1/TMS/phrase1/network/export/result/GraphicBulletin/"
+#output = "/data1/TMS/phrase1/network/export/result/"
+#working = "/data1/TMS/phrase1/working/"
+#pythonfolder = "/data1/TMS/phrase1/python/"
+#updatefolder = "/data1/TMS/phrase1/update/"
+#errorfolder = "/data1/TMS/phrase1/network/export/error/"
+#convertedfolder = "/data1/TMS/phrase1/network/export/converted/"
 
 text_bulletin_filename = "L-Title.txt"
 
