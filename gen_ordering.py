@@ -50,6 +50,8 @@ def remove_dup(bulletins):
         if last_bulletin != b:
             new_bulletins.append(b)
         last_bulletin = b
+    if new_bulletins[0] == new_bulletins[len(new_bulletins) - 1]:
+        new_bulletins.pop()
     return new_bulletins
 
 def reorder(bulletins):
@@ -145,7 +147,6 @@ def gen_order(filename, gfolder, tfolder):
                 bulletin[1] -= 1
                 finish = False
 
-
 # Text Bulletin Order (SN > Priority > Frequency)
     t_bulletins.sort(key=takesn, reverse=True)
     t_bulletins.sort(key=takefrequency, reverse=True)
@@ -174,8 +175,8 @@ def gen_order(filename, gfolder, tfolder):
                 bulletin[1] -= 1
                 finish = False
 
-#    g_order = remove_dup(g_order)
-#    t_order = remove_dup(t_order)
+    g_order = remove_dup(g_order)
+    t_order = remove_dup(t_order)
 
     g_order_file = gfolder + 'gb_order.txt'
     with open(g_order_file, "w") as f:
