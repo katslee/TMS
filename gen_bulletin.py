@@ -61,6 +61,7 @@ def read_excel(filename):
     error = False
     wb = openpyxl.load_workbook(filename, data_only=True)
     ws = wb.worksheets[0]
+    current_time = datetime.now()
 
     script = working + "genbulletin.sh"
     with open(script, "w") as f:
@@ -169,7 +170,8 @@ def read_excel(filename):
             else:
                 tcode = tcode + str(EndTime.minute)
             if bulletinType == "G":
-                f.writelines(pythonfolder + "upper_image_billboard.sh " + str(sn) + " " + chr(34) + qrcode + chr(34) + " " + dcode + " " + tcode + "\n")
+                if EndTime >= current_time:
+                    f.writelines(pythonfolder + "upper_image_billboard.sh " + str(sn) + " " + chr(34) + qrcode + chr(34) + " " + dcode + " " + tcode + "\n")
             else:
                 with open(working + gen_ordering.fname(sn, EndTime, "T"), "w") as f:
                     f.writelines(title + "\r\n")
