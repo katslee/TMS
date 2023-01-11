@@ -116,14 +116,23 @@ def read_excel(filename):
             with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
                 errfile.writelines(sn + " - footer line exceed ("  + str(footer.count(lf)) + ")." + "\r\n")
             error = True
-        if (bulletinType == "G" and footer != None):
-            for line in footer.splitlines():
-                if unilen(line) > 10:
-                    with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
-                        errfile.writelines(sn + " - footer words exceed (" + str(unilen(line)) + ")." + "\r\n")
-                    error = True
+        if bulletinType == "G":
+            if footer != None:
+                for line in footer.splitlines():
+                    if unilen(line) > 10:
+                        with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                            errfile.writelines(sn + " - footer words exceed (" + str(unilen(line)) + ")." + "\r\n")
+                        error = True
+            else:
+                with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                    errfile.writelines(sn + " - No footer." + "\r\n")
+                error = True
 
         qrcode = ws.cell(row=row, column=15).value
+        if (bulletinType == "G" and qrcode == None):
+            with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                errfile.writelines(sn + " - No QRCode URL." + "\r\n")
+            error = True
 
         txdate = ws.cell(row=row, column=5).value
         enddate = ws.cell(row=row, column=7).value
@@ -170,7 +179,7 @@ def read_excel(filename):
             else:
                 tcode = tcode + str(EndTime.minute)
             if bulletinType == "G":
-                if EndTime >= current_time:
+                if EndTime >= current_time and qrcode != None:
                     f.writelines(pythonfolder + "upper_image_billboard.sh " + str(sn) + " " + chr(34) + qrcode + chr(34) + " " + dcode + " " + tcode + "\n")
             else:
                 with open(working + gen_ordering.fname(sn, EndTime, "T"), "w") as f:
