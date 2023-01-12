@@ -69,6 +69,7 @@ def read_excel(filename):
         f.writelines("cd " + working + "\n")
 
     row = 2
+    snlist = []
     while ws.cell(row=row,column=1).value != None:
         bulletinType = str.lower(ws.cell(row=row, column=1).value)
         if bulletinType == "text bulletin":
@@ -80,6 +81,7 @@ def read_excel(filename):
                 errfile.writelines(sn + " - Ticker type undefined (" + bulletinType + ")." + "\r\n")
             error = True
         sn = str(ws.cell(row=row, column=11).value)
+        snlist.append(sn)
         title = ws.cell(row=row, column=12).value
 
         if title.count(lf) > 1:
@@ -194,6 +196,20 @@ def read_excel(filename):
             row += 1
         f.close()
 
+# Check any SN is duplicated in Excel
+    newSNlist = []
+    dupSNlist = []
+    for s in snlist:
+        if s not in newSNlist:
+            newSNlist.append(s)
+        else:
+            dupSNlist.append(s)
+    if len(dupSNlist) > 0:
+        with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+            for sn in dupSNlist:
+                errfile.writelines(sn + " - Duplicated." + "\r\n")
+        error = True
+
     os.chmod(script,0o755)
     for root, dirs, files in os.walk(working):
         for file in files:
@@ -242,6 +258,9 @@ def read_excel(filename):
         print(updatefolder)
         shutil.copy2(graphic_output + "gb_order.txt", updatefolder)
         shutil.copy2(text_output + "L-Title.txt", updatefolder)
+
+        with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+            errfile.writelines(filename + " - Success." + "\r\n")
     else:
         shutil.move(filename, errorfolder)
 

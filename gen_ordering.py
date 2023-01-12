@@ -54,6 +54,7 @@ def remove_dup(bulletins):
         new_bulletins.pop()
     return new_bulletins
 
+
 def reorder(bulletins):
     last = len(bulletins) - 1
     if bulletins[last] == bulletins[last - 1]:
