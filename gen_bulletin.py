@@ -93,7 +93,7 @@ def read_excel(filename):
                 error = True
 
         content = ws.cell(row=row, column=13).value
-        if (bulletinType == "G" and content.count(lf) > 3) or (bulletinType == "T" and content.count(lf) > 8):
+        if (bulletinType == "G" and content.count(lf) > 2) or (bulletinType == "T" and content.count(lf) > 8):
             with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
                 errfile.writelines(sn + " - content line exceed (" + str(content.count(lf)) + ")." + "\r\n")
             error = True
