@@ -131,7 +131,11 @@ def read_excel(filename):
         qrcode = ws.cell(row=row, column=15).value
         if (bulletinType == "G" and qrcode == None):
             with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
-                errfile.writelines(sn + " - No QRCode URL." + "\r\n")
+                errfile.writelines(sn + " - Graphic Bulletin, no QRCode URL." + "\r\n")
+            error = True
+        if (bulletinType == "T" and qrcode != None):
+            with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                errfile.writelines(sn + " - Text Bulletin, has QRCode URL." + "\r\n")
             error = True
 
         txdate = ws.cell(row=row, column=5).value
