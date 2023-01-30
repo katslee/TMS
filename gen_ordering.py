@@ -4,13 +4,13 @@ import glob
 import os
 
 
-# AMS UAT Server 20230130
+# AMS UAT Server
 watch = "/data1/TMS/phrase1/network/export/"
 update = "/data1/TMS/phrase1/update/"
 
 # MacOS Development
 #watch = "/Users/Kats/Documents/TickerManagementSystem/Python/watch/"
-#pdate = "/Users/Kats/Documents/TickerManagementSystem/Python/update/"
+#update = "/Users/Kats/Documents/TickerManagementSystem/Python/update/"
 def takefrequency(elem):
     return elem[1]
 
@@ -57,14 +57,15 @@ def remove_dup(bulletins):
 
 def reorder(bulletins):
     last = len(bulletins) - 1
+    if last == 27:
+        print("Bingo")
     if (bulletins[last] == bulletins[last - 1]) or (bulletins[0] == bulletins[last]):
         b = bulletins[last]
-        l = last - 1
-        for i in reversed(range(l)):
+        for i in reversed(range(last)):
             if (bulletins[i] != b) and (bulletins[i - 1] != b):
                 bulletins.insert(i,b)
+                del bulletins[-1]
                 break
-        del bulletins[-1]
     return bulletins
 
 def gen_order(filename, gfolder, tfolder):
@@ -134,7 +135,7 @@ def gen_order(filename, gfolder, tfolder):
                 g_order.append(bulletin[6])
                 if len(g_order) > 2:
                     reorder(g_order)
-                bulletin[1] -= 1
+                bulletin[1] -= 1 # reduce frequency by 1
                 finish = False
 
 # Next Round if anyone Frequency > 0
