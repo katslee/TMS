@@ -57,8 +57,6 @@ def remove_dup(bulletins):
 
 def reorder(bulletins):
     last = len(bulletins) - 1
-    if last == 27:
-        print("Bingo")
     if (bulletins[last] == bulletins[last - 1]) or (bulletins[0] == bulletins[last]):
         b = bulletins[last]
         for i in reversed(range(last)):
