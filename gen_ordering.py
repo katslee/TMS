@@ -4,7 +4,7 @@ import glob
 import os
 
 
-# AMS UAT Server
+# AMS UAT Server 20230130
 watch = "/data1/TMS/phrase1/network/export/"
 update = "/data1/TMS/phrase1/update/"
 
