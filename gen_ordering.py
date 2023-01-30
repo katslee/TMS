@@ -57,8 +57,6 @@ def remove_dup(bulletins):
 
 def reorder(bulletins):
     last = len(bulletins) - 1
-    if bulletins[last] == '5119 d0210 1800.jpg':
-        print("Bingo")
     if (bulletins[last] == bulletins[last - 1]) or (bulletins[0] == bulletins[last]):
         b = bulletins[last]
         l = last - 1
