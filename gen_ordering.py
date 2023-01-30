@@ -10,7 +10,7 @@ update = "/data1/TMS/phrase1/update/"
 
 # MacOS Development
 #watch = "/Users/Kats/Documents/TickerManagementSystem/Python/watch/"
-#update = "Users/Kats/Documents/TickerManagementSystem/Python/update/"
+#pdate = "/Users/Kats/Documents/TickerManagementSystem/Python/update/"
 def takefrequency(elem):
     return elem[1]
 
@@ -57,7 +57,9 @@ def remove_dup(bulletins):
 
 def reorder(bulletins):
     last = len(bulletins) - 1
-    if bulletins[last] == bulletins[last - 1]:
+    if bulletins[last] == '5119 d0210 1800.jpg':
+        print("Bingo")
+    if (bulletins[last] == bulletins[last - 1]) or (bulletins[0] == bulletins[last]):
         b = bulletins[last]
         l = last - 1
         for i in reversed(range(l)):
