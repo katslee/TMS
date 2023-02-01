@@ -114,10 +114,12 @@ def read_excel(filename):
                 with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
                     errfile.writelines(sn + " - should not has footer." + "\r\n")
                 error = True
-        if (bulletinType =="G" and footer.count(lf) > 1):
+
+        if (bulletinType =="G" and footer.count(lf) > 0):
             with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
                 errfile.writelines(sn + " - footer line exceed ("  + str(footer.count(lf)) + ")." + "\r\n")
             error = True
+
         if bulletinType == "G":
             if footer != None:
                 for line in footer.splitlines():
