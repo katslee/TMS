@@ -224,7 +224,13 @@ def read_excel(filename):
         # Copy the excel file to update & working folder
         path, fname = os.path.split(filename)
         ufolder = os.path.join(updatefolder,fname)
-        shutil.copy2(filename, convertedfolder)
+        try:
+            shutil.copy2(filename, convertedfolder)
+        except:
+            with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                errfile.writelines("Excel file cannot move in ingest folder." + "\r\n")
+        else:
+            shutil.copy2(filename, convertedfolder)
         shutil.move(filename, ufolder)
         rcode = call(script, shell=True)
         #print(rcode)
