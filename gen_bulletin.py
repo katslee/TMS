@@ -231,7 +231,10 @@ def read_excel(filename):
                 errfile.writelines("Excel file cannot move in ingest folder." + "\r\n")
         else:
             shutil.copy2(filename, convertedfolder)
-        shutil.move(filename, ufolder)
+        try:
+            shutil.move(filename, ufolder)
+        except:
+            shutil.copy2(filename,ufolder)
         rcode = call(script, shell=True)
         #print(rcode)
 
