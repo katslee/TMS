@@ -3,9 +3,16 @@ from datetime import datetime, date, timedelta
 import os
 from subprocess import call
 import glob
+import os
 import shutil
 import gen_ordering
 import unicodedata
+from datetime import datetime, timedelta
+from subprocess import call
+
+import openpyxl
+
+import gen_ordering
 
 crlf = chr(13) + chr(10)
 lf = chr(10)
@@ -23,6 +30,10 @@ lf = chr(10)
 text_output = "/data1/TMS/phrase1/network/export/result/TextBulletin/"
 graphic_output = "/data1/TMS/phrase1/network/export/result/GraphicBulletin/"
 output = "/data1/TMS/phrase1/network/export/result/"
+graphicengine1 = "/data1/TMS/phrase1/network/graphicengine1/result/GraphicBulletin/"
+graphicengine2 = "/data1/TMS/phrase1/local/graphicengine2/result/GraphicBulletin/"
+textengine1 = "/data1/TMS/phrase1/network/graphicengine1/result/TextBulletin/"
+textengine2 = "/data1/TMS/phrase1/local/graphicengine2/result/TextBulletin/"
 working = "/data1/TMS/phrase1/working/"
 pythonfolder = "/data1/TMS/phrase1/python/"
 updatefolder = "/data1/TMS/phrase1/update/"
@@ -229,29 +240,74 @@ def read_excel(filename):
         except:
             with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
                 errfile.writelines("Excel file cannot move in ingest folder." + "\r\n")
-        else:
-            shutil.copy2(filename, convertedfolder)
+
         try:
             shutil.move(filename, ufolder)
         except:
-            shutil.copy2(filename,ufolder)
+            with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                errfile.writelines("Excel file cannot move to update folder." + "\r\n")
+
         rcode = call(script, shell=True)
-        #print(rcode)
 
         # Move all files in output folder to old folder
         files = glob.iglob(os.path.join(graphic_output, "*.jpg"))
         for f in files:
             if os.path.isfile(f):
                 path, fname = os.path.split(f)
-                shutil.move(f, graphic_output + "old/" + fname)
-        #shutil.move(graphic_output + "gb_order.txt", graphic_output + "old/" + "gb_order.txt")
+                try:
+                    shutil.move(f, graphic_output + "old/" + fname)
+                except:
+                    with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                        errfile.writelines("Cannot move graphic from output folder to old folder." + "\r\n")
+
+        files = glob.iglob(os.path.join(graphicengine1, "*.jpg"))
+        for f in files:
+            if os.path.isfile(f):
+                path, fname = os.path.split(f)
+                try:
+                    shutil.move(f, graphicengine1 + "old/" + fname)
+                except:
+                    with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                        errfile.writelines("Cannot move graphic from graphengine1 to old folder." + "\r\n")
+
+        files = glob.iglob(os.path.join(graphicengine2, "*.jpg"))
+        for f in files:
+            if os.path.isfile(f):
+                path, fname = os.path.split(f)
+                try:
+                    shutil.move(f, graphicengine2 + "old/" + fname)
+                except:
+                    with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                        errfile.writelines("Cannot move graphic from graphengine2 to old folder." + "\r\n")
+
 
         # Copy jpg from working folder to result folder
         files = glob.iglob(os.path.join(working, "*.jpg"))
         for f in files:
             if os.path.isfile(f):
+                # Copy to update folder
                 shutil.copy2(f, updatefolder)
-                shutil.copy2(f, graphic_output)
+                try:
+                    shutil.copy2(f, graphic_output)
+                except:
+                    with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                        errfile.writelines("Cannot copy graphic from working to graphic folder." + "\r\n")
+
+
+                # copy to Graphicengine1
+                try:
+                    shutil.copy2(f, graphicengine1)
+                except:
+                    with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                        errfile.writelines("Cannot copy graphic from working to graphicengine1 folder." + "\r\n")
+
+
+                # copy to Graphicengine2
+                try:
+                    shutil.copy2(f, graphicengine2)
+                except:
+                    with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
+                        errfile.writelines("Cannot copy graphic from working to graphicengine2 folder." + "\r\n")
 
         # Copy text from working to update folders
         files = glob.iglob(os.path.join(working, "*.txt"))
@@ -259,16 +315,19 @@ def read_excel(filename):
             if os.path.isfile(f):
                 shutil.copy2(f, updatefolder)
 
-        # Copy L-Title, gb_order to result folders
-        #shutil.copy2((glob.iglob(os.path.join(working, "L-Title.txt"))), output + folder)
-        #shutil.copy2((glob.iglob(os.path.join(working, "gb_order.txt"))), output + folder)
-
         # Generate ordering file
-        #gen_ordering.gen_order(ufolder, output + folder)
-        gen_ordering.gen_order(ufolder, graphic_output, text_output)
-        print(updatefolder)
-        shutil.copy2(graphic_output + "gb_order.txt", updatefolder)
-        shutil.copy2(text_output + "L-Title.txt", updatefolder)
+#        gen_ordering.gen_order(ufolder, graphic_output, text_output)
+        # Copy to update folder
+#        shutil.copy2(graphic_output + "gb_order.txt", updatefolder)
+#        shutil.copy2(text_output + "L-Title.txt", updatefolder)
+
+        gen_ordering.gen_order(ufolder,updatefolder,updatefolder)
+        shutil.copy2(updatefolder + "gb_order.txt", graphic_output)
+        shutil.copy2(updatefolder + "gb_order.txt", graphicengine1)
+        shutil.copy2(updatefolder + "gb_order.txt", graphicengine2)
+        shutil.copy2(updatefolder + "L-Title.txt", text_output)
+        shutil.copy2(updatefolder + "L-Title.txt", textengine1)
+        shutil.copy2(updatefolder + "L-Title.txt", textengine2)
 
         with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
             errfile.writelines(filename + " - Success." + "\r\n")
