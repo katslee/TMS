@@ -175,8 +175,10 @@ def gen_order(filename, gfolder, tfolder):
                 bulletin[1] -= 1
                 finish = False
 
-    g_order = remove_dup(g_order)
-    t_order = remove_dup(t_order)
+    if len(g_order) > 1:
+        g_order = remove_dup(g_order)
+    if len(t_order) > 1:
+        t_order = remove_dup(t_order)
 
     g_order_file = gfolder + 'gb_order.txt'
     with open(g_order_file, "w") as f:

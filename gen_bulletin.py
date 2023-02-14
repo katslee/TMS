@@ -330,7 +330,7 @@ def read_excel(filename):
         shutil.copy2(updatefolder + "L-Title.txt", textengine2)
 
         with open(errorfolder + "error_" + os.path.basename(filename) + ".txt", "a") as errfile:
-            errfile.writelines(filename + " - Success." + "\r\n")
+            errfile.writelines(filename + " - Success, Excel end of row number " + str(row) + "\r\n")
     else:
         shutil.move(filename, errorfolder)
 
