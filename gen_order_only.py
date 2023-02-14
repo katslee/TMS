@@ -17,6 +17,10 @@ pythonfolder = "/data1/TMS/phrase1/python/"
 updatefolder = "/data1/TMS/phrase1/update/"
 text_output = "/data1/TMS/phrase1/network/export/result/TextBulletin/"
 graphic_output = "/data1/TMS/phrase1/network/export/result/GraphicBulletin/"
+graphicengine1 = "/data1/TMS/phrase1/network/graphicengine1/result/GraphicBulletin/"
+graphicengine2 = "/data1/TMS/phrase1/local/graphicengine2/result/GraphicBulletin/"
+textengine1 = "/data1/TMS/phrase1/network/graphicengine1/result/TextBulletin/"
+textengine2 = "/data1/TMS/phrase1/local/graphicengine2/result/TextBulletin/"
 working = "/data1/TMS/phrase1/working/"
 
 def comparefiles(f1, f2):
@@ -25,18 +29,50 @@ def comparefiles(f1, f2):
 
 os.chdir(updatefolder)
 for file in glob.glob("*.xls*"):
-    #folder = datetime.now().strftime("%Y%m%d%H%M") + "/"
-    #os.mkdir(output + folder)
-    #gen_ordering.gen_order(updatefolder + file, output + folder)
     gen_ordering.gen_order(updatefolder + file, working, working)
 
     # copy order file if different
     g_result = comparefiles(working + "gb_order.txt", updatefolder + "gb_order.txt")
     if not g_result:
-        shutil.copy2(working + "gb_order.txt", graphic_output + "gb_order.txt")
-        shutil.copy2(working + "gb_order.txt", updatefolder + "gb_order.txt")
+        try:
+            shutil.copy2(working + "gb_order.txt", graphic_output + "gb_order.txt")
+        except:
+            print("Error.")
+
+        try:
+            shutil.copy2(working + "gb_order.txt", updatefolder + "gb_order.txt")
+        except:
+            print("Error.")
+
+        try:
+            shutil.copy2(working + "gb_order.txt", graphicengine1 + "gb_order.txt")
+        except:
+            print("Error.")
+
+        try:
+            shutil.copy2(working + "gb_order.txt", graphicengine2 + "gb_order.txt")
+        except:
+            print("Error.")
 
     t_result = comparefiles(working + "L-Title.txt", updatefolder + "L-Title.txt")
     if not t_result:
-        shutil.copy2(working + "L-Title.txt", text_output + "L-Title.txt")
-        shutil.copy2(working + "L-Title.txt", updatefolder + "L-Title.txt")
+        try:
+            shutil.copy2(working + "L-Title.txt", text_output + "L-Title.txt")
+        except:
+            print("Error.")
+
+        try:
+            shutil.copy2(working + "L-Title.txt", updatefolder + "L-Title.txt")
+        except:
+            print("Error.")
+
+        try:
+            shutil.copy2(working + "L-Title.txt", textengine1 + "L-Title.txt")
+        except:
+            print("Error.")
+
+        try:
+            shutil.copy2(working + "L-Title.txt", textengine2 + "L-Title.txt")
+        except:
+            print("Error.")
+        
